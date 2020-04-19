@@ -29,7 +29,8 @@ if ($product->title) {
 		'manufacturer_id' => $product->manufacturer_id,
 		'category_id' => $product->category_id,
 		'alias' => $product->alias,
-		'created_at' => $product->created_at
+		'created_at' => $product->created_at,
+		'updated_at' => $product->updated_at,
 	];
 
 	// Status code - 200 OK

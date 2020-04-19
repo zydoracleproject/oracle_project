@@ -7,10 +7,10 @@ include_once '../config/core.php';
 include_once '../layouts/product_inc.php';
 
 // get keywords from request
-$keywords = $data['s'] ?? '';
+$id = $data['man_id'] ?? '';
 
 // request products
-$stmt = $product->search($keywords);
+$stmt = $product->readByMan($id);
 $num = oci_num_fields($stmt);
 
 if ($num > 0) {

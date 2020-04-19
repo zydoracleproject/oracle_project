@@ -239,6 +239,60 @@ class Product
 		return $row['TOTAL_ROWS'];
 	}
 
+	// method search() - read products by manufacturers
+	public function readByMan($id)
+	{
+		// select from all records
+		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
+							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
+							p.manufacturer_id, p.category_id, p.alias, p.created_at, p.updated_at
+							FROM ' . $this->table_name . ' p 
+							LEFT JOIN categories c ON p.category_id = c.id
+							LEFT JOIN manufacturers m ON p.manufacturer_id = m.id
+							WHERE p.manufacturer_id = :id';
+
+		// preparing query
+		$stmt = oci_parse($this->conn, $query);
+
+		// Cleaning
+		$id = htmlspecialchars(strip_tags($id));
+
+		// Binding
+		oci_bind_by_name($stmt, ':id', $id);
+
+		// Request query
+		oci_execute($stmt);
+
+		return $stmt;
+	}
+
+	// method readByCat() - read products by categories
+	public function readByCat($id)
+	{
+		// select from all records
+		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
+							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
+							p.manufacturer_id, p.category_id, p.alias, p.created_at, p.updated_at
+							FROM ' . $this->table_name . ' p 
+							LEFT JOIN categories c ON p.category_id = c.id
+							LEFT JOIN manufacturers m ON p.manufacturer_id = m.id
+							WHERE p.category_id = :id';
+
+		// preparing query
+		$stmt = oci_parse($this->conn, $query);
+
+		// Cleaning
+		$id = htmlspecialchars(strip_tags($id));
+
+		// Binding
+		oci_bind_by_name($stmt, ':id', $id);
+
+		// Request query
+		oci_execute($stmt);
+
+		return $stmt;
+	}
+
 	private function clean()
 	{
 		// cleaning
