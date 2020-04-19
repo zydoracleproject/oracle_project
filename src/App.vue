@@ -10,7 +10,7 @@
 			return {};
 		},
 		mounted() {
-			this.search();
+			this.read();
 		},
 		methods: {
 			update() {
@@ -30,7 +30,7 @@
 					manufacturer_id: null,
 					category_id: null,
 					alias: 'Alias',
-          created_at: '16-APR-20 07.57.03.000000000 PM',
+					created_at: '16-APR-20 07.57.03.000000000 PM',
 				};
 
 				// eslint-disable-next-line no-unused-vars
@@ -42,11 +42,23 @@
 					console.log(error);
 				});
 			},
-      search() {
-				this.$http.get('http://localhost:8000/api/product/search.php?s=Product').then((res) => {
+			search() {
+				this.$http.post('http://localhost:8000/api/product/search.php', JSON.stringify({
+					s: 'Product Title',
+					username: 'admin',
+					password: '1234',
+				})).then((res) => {
 					console.log(res);
-        });
-      }
+				});
+			},
+			read() {
+				this.$http.post('http://localhost:8000/api/product/read_paging.php', JSON.stringify({
+					username: btoa('admin'),
+					password: btoa('1234'),
+				})).then((response) => {
+					console.log(response);
+				});
+			}
 		},
 	}
 </script>

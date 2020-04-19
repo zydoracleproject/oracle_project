@@ -6,9 +6,15 @@ class Database
 	// My login data of database
 	private $host = 'dhcppc6:1521/XE';
 	private $db_name = 'warmhouse';
-	private $username = 'admin';
-	private $password = '1234';
+	private $username = 'guest';
+	private $password = 'guest';
 	public $conn;
+
+	public function __construct($username, $password)
+	{
+		$this->username = $username;
+		$this->password = $password;
+	}
 
 	// Connecting with database
 	public function getConnection()

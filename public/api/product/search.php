@@ -7,7 +7,7 @@ include_once '../config/core.php';
 include_once '../layouts/product_inc.php';
 
 // get keywords from request
-$keywords = $_GET['s'] ?? '';
+$keywords = $_POST['s'] ?? '';
 
 // request products
 $stmt = $product->search($keywords);

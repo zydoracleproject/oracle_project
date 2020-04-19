@@ -174,12 +174,13 @@ class Product
 	public function search($keywords)
 	{
 		// select from all records
-		$query = 'SELECT c.title as category_title, p.id, p.title, p.content, p.model,
+		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
 							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
 							p.manufacturer_id, p.category_id, p.alias, p.created_at, p.updated_at
 							FROM ' . $this->table_name . ' p 
 							LEFT JOIN categories c ON p.category_id = c.id
-							WHERE p.title LIKE :keywords OR c.title LIKE :keywords';
+							LEFT JOIN manufacturers m ON p.manufacturer_id = m.id
+							WHERE p.title LIKE :keywords OR c.title LIKE :keywords OR m.title LIKE :keywords';
 
 		// preparing query
 		$stmt = oci_parse($this->conn, $query);
@@ -195,6 +196,47 @@ class Product
 		oci_execute($stmt);
 
 		return $stmt;
+	}
+
+	// method readPaging - reading products with paging
+	public function readPaging($from_record_num, $records_per_page) {
+
+		// Selecting
+		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title,
+ 							p.model, p.price, p.status, p.pop_status, p.amount,
+							p.keywords, p.description, p.manufacturer_id,
+							p.category_id, p.alias, p.created_at, p.updated_at
+							FROM ' . $this->table_name . ' p
+							LEFT JOIN categories c ON (p.category_id = c.id)
+							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
+							WHERE rownum BETWEEN :f AND :t
+							ORDER BY p.created_at DESC';
+
+		// Preparing query
+		$stmt = oci_parse($this->conn, $query);
+
+		// Binding
+		oci_bind_by_name($stmt, ':f', $from_record_num);
+		oci_bind_by_name($stmt, ':t', $records_per_page);
+
+		// Make request
+		oci_execute($stmt);
+
+		// Returns data from db
+		return $stmt;
+	}
+
+	// Calculating for paging products
+	public function count() {
+		$query = 'SELECT COUNT(*) as total_rows FROM ' . $this->table_name;
+
+		$stmt = oci_parse($this->conn, $query);
+
+		oci_execute($stmt);
+
+		$row = oci_fetch_assoc($stmt);
+
+		return $row['TOTAL_ROWS'];
 	}
 
 	private function clean()
