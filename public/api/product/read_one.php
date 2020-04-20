@@ -8,7 +8,7 @@ header('Content-Type: application/json');
 
 include_once '../layouts/product_inc.php';
 
-$product->id = $_GET['id'] ?? die();
+$product->id = $data['id'] ?? die();
 
 $product->readOne();
 
@@ -28,7 +28,6 @@ if ($product->title) {
 		'description' => $product->description,
 		'manufacturer_id' => $product->manufacturer_id,
 		'category_id' => $product->category_id,
-		'alias' => $product->alias,
 		'created_at' => $product->created_at,
 		'updated_at' => $product->updated_at,
 	];

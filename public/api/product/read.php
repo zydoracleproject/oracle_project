@@ -7,14 +7,15 @@ include_once '../layouts/product_inc.php';
 
 // Request products
 $stmt = $product->read();
-$num = oci_num_fields($stmt);
+$first = oci_fetch_assoc($stmt);
+$num = oci_num_rows($stmt);
 
 // Checking for data existing
 if ($num > 0) {
 
 	// array of products
 	$products_arr = array();
-	$products_arr['records'] = array();
+	$products_arr['records'] = [$first];
 
 	// Get content from our table
 	while ($row = oci_fetch_assoc($stmt)) {

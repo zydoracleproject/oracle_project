@@ -8,7 +8,19 @@ class Product
 	// all columns on products table
 	public $id, $title, $content, $model,
 		$price, $status, $pop_status, $amount,
-		$keywords, $description, $manufacturer_id, $category_id, $alias, $created_at, $updated_at;
+		$keywords, $description, $manufacturer_id, $category_id, $created_at, $updated_at;
+	public $images = ['image_1' => '', 'image_2' => '', 'image_3' => ''];
+	public $options = [
+		'execution' => '',
+		'appointment' => '',
+		'power' => '',
+		'premises' => '',
+		'height' => '',
+		'width' => '',
+		'depth' => '',
+		'chamber' => '',
+		'warranty' => '',
+	];
 
 	//Accepts db connection
 	public function __construct($db)
@@ -23,10 +35,15 @@ class Product
 		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title,
  							p.model, p.price, p.status, p.pop_status, p.amount,
 							p.keywords, p.description, p.manufacturer_id,
-							p.category_id, p.alias, p.created_at, p.updated_at
+							p.category_id, p.created_at, p.updated_at,
+							i.image_1, i.image_2, i.image_3,
+							o.execution, o.appointment, o.power, o.premises,
+							o.height, o.width, o.depth, chamber, o.warranty
 							FROM ' . $this->table_name . ' p
 							LEFT JOIN categories c ON (p.category_id = c.id)
 							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
+							LEFT JOIN images i ON (p.id = i.product_id)
+							LEFT JOIN options o ON (p.id = o.product_id)
 							ORDER BY p.created_at DESC';
 
 		// Make request
@@ -43,12 +60,22 @@ class Product
 	{
 
 		// request for inserting records
-		$query = 'INSERT INTO ' . $this->table_name . " 
-							(title, content, model, price, status, pop_status,
-							amount, keywords, description, manufacturer_id, category_id, alias, created_at) 
-							VALUES (:title, :content, :model, :price, :status, :pop_status, :amount,
-											:keywords, :description, :manufacturer_id, :category_id,
-											:alias, TO_TIMESTAMP(TO_DATE(:created_at, 'MM/DD/YYYY HH24:MI:SS')))";
+		$query = 'DECLARE
+							get_id NUMBER;
+							BEGIN
+							INSERT INTO ' . $this->table_name . " 
+												(title, content, model, price, status, pop_status,
+												amount, keywords, description, manufacturer_id, category_id, created_at) 
+												VALUES (:title, :content, :model, :price, :status, :pop_status, :amount,
+																:keywords, :description, :manufacturer_id, :category_id,
+															TO_TIMESTAMP(:created_at, 'MM/DD/YYYY HH24:MI:SS')) RETURNING id INTO get_id;
+							INSERT INTO images (product_id, image_1, image_2, image_3) VALUES (get_id, :image_1, :image_2, :image_3);
+							INSERT INTO options (product_id, execution, appointment, power,
+																	premises, height, width, depth, chamber, warranty)
+													VALUES (get_id, :execution, :appointment, :power, :premises,
+																	:height, :width, :depth, :chamber, :warranty);
+							COMMIT;
+							END;";
 
 		$stmt = oci_parse($this->conn, $query);
 
@@ -57,6 +84,8 @@ class Product
 
 		// Bind values by names
 		$this->bindByNames($stmt);
+		$this->bindImages($stmt);
+		$this->bindOptions($stmt);
 
 		if (oci_execute($stmt)) {
 			return true;
@@ -72,10 +101,14 @@ class Product
 		// request for reading one record (product)
 		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
 							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
-							p.manufacturer_id, p.category_id, p.alias, p.created_at, p.updated_at
+							p.manufacturer_id, p.category_id, p.created_at, p.updated_at,
+							i.image_1, i.image_2, i.image_3,
+							o.execution, o.appointment, o.power, o.premises, o.height, o.width, o.depth, o.chamber, o.warranty
 							FROM ' . $this->table_name . ' p 
-							LEFT JOIN categories c ON p.category_id = c.id
+							LEFT JOIN categories c ON (p.category_id = c.id)
 							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
+							LEFT JOIN images i ON (p.id = i.product_id)
+							LEFT JOIN options o ON (p.id = o.product_id)
 							WHERE p.id = :id';
 
 		// Preparing request
@@ -102,7 +135,6 @@ class Product
 		$this->description = $row['DESCRIPTION'];
 		$this->manufacturer_id = $row['MANUFACTURER_ID'];
 		$this->category_id = $row['CATEGORY_ID'];
-		$this->alias = $row['ALIAS'];
 		$this->created_at = $row['CREATED_AT'];
 		$this->updated_at = $row['UPDATED_AT'];
 	}
@@ -111,9 +143,9 @@ class Product
 	public function update()
 	{
 		// query for updating record (product)
-		$query = 'UPDATE ' . $this->table_name . "
-							SET 
-									title = :title,
+		$query = 'BEGIN
+							UPDATE ' . $this->table_name . " 
+							SET title = :title,
 									content = :content,
 									model = :model,
 									price = :price,
@@ -124,11 +156,29 @@ class Product
 									description = :description,
 									manufacturer_id = :manufacturer_id,
 									category_id = :category_id,
-									alias = :alias,
 									created_at = :created_at,
-									updated_at = TO_TIMESTAMP(TO_DATE(:updated_at, 'MM/DD/YYYY HH24:MI:SS'))
-							WHERE id = :id";
-
+									updated_at = TO_TIMESTAMP(:updated_at, 'MM/DD/YYYY HH24:MI:SS')
+							WHERE id = :id;
+							UPDATE images 
+							SET
+								image_1 = :image_1,
+								image_2 = :image_2,
+								image_3 = :image_3
+							WHERE product_id = :id;
+							UPDATE options 
+							SET
+								execution = :execution,
+								appointment = :appointment,
+								power = :power,
+								premises = :premises,
+								height = :height,
+								width = :width,
+								depth = :depth,
+								chamber = :chamber,
+								warranty = :warranty
+							WHERE product_id = :id;
+							COMMIT;
+							END;";
 		// preparing query
 		$stmt = oci_parse($this->conn, $query);
 
@@ -137,12 +187,16 @@ class Product
 
 		// Bind by names
 		$this->bindByNames($stmt);
+		$this->bindOptions($stmt);
+		$this->bindImages($stmt);
 		oci_bind_by_name($stmt, ':id', $this->id);
 		oci_bind_by_name($stmt, ':updated_at', $this->updated_at);
 
 		if (oci_execute($stmt)) {
 			return true;
 		}
+
+		var_dump(oci_error($stmt));
 
 		return false;
 	}
@@ -176,10 +230,14 @@ class Product
 		// select from all records
 		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
 							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
-							p.manufacturer_id, p.category_id, p.alias, p.created_at, p.updated_at
+							p.manufacturer_id, p.category_id, p.created_at, p.updated_at,
+							i.image_1, i.image_2, i.image_3,
+							o.execution, o.appointment, o.power, o.premises, o.height, o.width, o.depth, o.chamber, o.warranty
 							FROM ' . $this->table_name . ' p 
-							LEFT JOIN categories c ON p.category_id = c.id
-							LEFT JOIN manufacturers m ON p.manufacturer_id = m.id
+							LEFT JOIN categories c ON (p.category_id = c.id)
+							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
+							LEFT JOIN images i ON (p.id = i.product_id)
+							LEFT JOIN options o ON (p.id = o.product_id)
 							WHERE p.title LIKE :keywords OR c.title LIKE :keywords OR m.title LIKE :keywords';
 
 		// preparing query
@@ -199,16 +257,20 @@ class Product
 	}
 
 	// method readPaging - reading products with paging
-	public function readPaging($from_record_num, $records_per_page) {
+	public function readPaging($from_record_num, $records_per_page)
+	{
 
 		// Selecting
-		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title,
- 							p.model, p.price, p.status, p.pop_status, p.amount,
-							p.keywords, p.description, p.manufacturer_id,
-							p.category_id, p.alias, p.created_at, p.updated_at
-							FROM ' . $this->table_name . ' p
+		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
+							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
+							p.manufacturer_id, p.category_id, p.created_at, p.updated_at,
+							i.image_1, i.image_2, i.image_3,
+							o.execution, o.appointment, o.power, o.premises, o.height, o.width, o.depth, o.chamber, o.warranty
+							FROM ' . $this->table_name . ' p 
 							LEFT JOIN categories c ON (p.category_id = c.id)
 							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
+							LEFT JOIN images i ON (p.id = i.product_id)
+							LEFT JOIN options o ON (p.id = o.product_id)
 							WHERE rownum BETWEEN :f AND :t
 							ORDER BY p.created_at DESC';
 
@@ -227,7 +289,8 @@ class Product
 	}
 
 	// Calculating for paging products
-	public function count() {
+	public function count()
+	{
 		$query = 'SELECT COUNT(*) as total_rows FROM ' . $this->table_name;
 
 		$stmt = oci_parse($this->conn, $query);
@@ -245,10 +308,14 @@ class Product
 		// select from all records
 		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
 							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
-							p.manufacturer_id, p.category_id, p.alias, p.created_at, p.updated_at
+							p.manufacturer_id, p.category_id, p.created_at, p.updated_at,
+							i.image_1, i.image_2, i.image_3,
+							o.execution, o.appointment, o.power, o.premises, o.height, o.width, o.depth, o.chamber, o.warranty
 							FROM ' . $this->table_name . ' p 
-							LEFT JOIN categories c ON p.category_id = c.id
-							LEFT JOIN manufacturers m ON p.manufacturer_id = m.id
+							LEFT JOIN categories c ON (p.category_id = c.id)
+							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
+							LEFT JOIN images i ON (p.id = i.product_id)
+							LEFT JOIN options o ON (p.id = o.product_id)
 							WHERE p.manufacturer_id = :id';
 
 		// preparing query
@@ -272,10 +339,14 @@ class Product
 		// select from all records
 		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
 							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
-							p.manufacturer_id, p.category_id, p.alias, p.created_at, p.updated_at
+							p.manufacturer_id, p.category_id, p.created_at, p.updated_at,
+							i.image_1, i.image_2, i.image_3,
+							o.execution, o.appointment, o.power, o.premises, o.height, o.width, o.depth, o.chamber, o.warranty
 							FROM ' . $this->table_name . ' p 
-							LEFT JOIN categories c ON p.category_id = c.id
-							LEFT JOIN manufacturers m ON p.manufacturer_id = m.id
+							LEFT JOIN categories c ON (p.category_id = c.id)
+							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
+							LEFT JOIN images i ON (p.id = i.product_id)
+							LEFT JOIN options o ON (p.id = o.product_id)
 							WHERE p.category_id = :id';
 
 		// preparing query
@@ -307,9 +378,20 @@ class Product
 		$this->description = htmlspecialchars(strip_tags($this->description));
 		$this->manufacturer_id = htmlspecialchars(strip_tags($this->manufacturer_id));
 		$this->category_id = htmlspecialchars(strip_tags($this->category_id));
-		$this->alias = htmlspecialchars(strip_tags($this->alias));
 		$this->created_at = htmlspecialchars(strip_tags($this->created_at));
 		$this->updated_at = htmlspecialchars(strip_tags($this->updated_at));
+		$this->images['image_1'] = htmlspecialchars(strip_tags($this->images['image_1']));
+		$this->images['image_2'] = htmlspecialchars(strip_tags($this->images['image_2']));
+		$this->images['image_3'] = htmlspecialchars(strip_tags($this->images['image_3']));
+		$this->images['execution'] = htmlspecialchars(strip_tags($this->images['execution']));
+		$this->images['appointment'] = htmlspecialchars(strip_tags($this->images['appointment']));
+		$this->images['power'] = htmlspecialchars(strip_tags($this->images['power']));
+		$this->images['premises'] = htmlspecialchars(strip_tags($this->images['premises']));
+		$this->images['height'] = htmlspecialchars(strip_tags($this->images['height']));
+		$this->images['width'] = htmlspecialchars(strip_tags($this->images['width']));
+		$this->images['depth'] = htmlspecialchars(strip_tags($this->images['depth']));
+		$this->images['chamber'] = htmlspecialchars(strip_tags($this->images['chamber']));
+		$this->images['warranty'] = htmlspecialchars(strip_tags($this->images['warranty']));
 	}
 
 	private function bindByNames($stmt)
@@ -326,7 +408,24 @@ class Product
 		oci_bind_by_name($stmt, ':description', $this->description);
 		oci_bind_by_name($stmt, ':manufacturer_id', $this->manufacturer_id);
 		oci_bind_by_name($stmt, ':category_id', $this->category_id);
-		oci_bind_by_name($stmt, ':alias', $this->alias);
 		oci_bind_by_name($stmt, ':created_at', $this->created_at);
+	}
+
+	private function bindImages($stmt) {
+		oci_bind_by_name($stmt, ':image_1', $this->images['image_1']);
+		oci_bind_by_name($stmt, ':image_2', $this->images['image_2']);
+		oci_bind_by_name($stmt, ':image_3', $this->images['image_3']);
+	}
+
+	private function bindOptions($stmt) {
+		oci_bind_by_name($stmt, ':execution', $this->options['execution']);
+		oci_bind_by_name($stmt, ':appointment', $this->options['appointment']);
+		oci_bind_by_name($stmt, ':power', $this->options['power']);
+		oci_bind_by_name($stmt, ':premises', $this->options['premises']);
+		oci_bind_by_name($stmt, ':height', $this->options['height']);
+		oci_bind_by_name($stmt, ':width', $this->options['width']);
+		oci_bind_by_name($stmt, ':depth', $this->options['depth']);
+		oci_bind_by_name($stmt, ':chamber', $this->options['chamber']);
+		oci_bind_by_name($stmt, ':warranty', $this->options['warranty']);
 	}
 }

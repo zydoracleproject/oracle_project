@@ -8,7 +8,7 @@ header('Content-Type: application/json');
 
 include_once '../layouts/category_inc.php';
 
-$category->id = $_GET['id'] ?? die();
+$category->id = $data['id'] ?? die();
 
 $category->readOne();
 
@@ -34,6 +34,6 @@ if ($category->title) {
 	http_response_code(404);
 
 	// sent a message to user that product is not found
-	echo json_encode(['message' => 'Product does not exist.'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE, 512);
+	echo json_encode(['message' => 'Category does not exist.'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE, 512);
 }
 

@@ -6,22 +6,22 @@ header('Access-Control-Max-Age: 3600');
 header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
 date_default_timezone_set('Asia/Aqtobe');
 
-include_once '../layouts/category_inc.php';
+include_once '../layouts/user_inc.php';
 
-if (!empty($data['title'])) {
+if (!empty($data['u_username']) && !empty($data['u_password']) && !empty($data['phone'])) {
 
 	// set fields for products
-	$category->title = $data['title'];
-	$category->keywords = $data['keywords'];
-	$category->description = $data['description'];
-	$category->created_at = date('m/d/Y H:i:s');
+	$user->username = $data['u_username'];
+	$user->password = md5($data['u_password']);
+	$user->phone = $data['phone'];
+	$user->created_at = date('m/d/Y H:i:s');
 
-	if ($category->create()) {
+	if ($user->create()) {
 		// set status code - 201 Created
 		http_response_code(201);
 
 		// send to user
-		echo json_encode(['message' => 'Category is created'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE, 512);
+		echo json_encode(['message' => 'User is created'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE, 512);
 
 	} else {
 		// if product is not create send a message to user
@@ -29,7 +29,7 @@ if (!empty($data['title'])) {
 		http_response_code(503);
 
 		// send to user
-		echo json_encode(['message' => 'Unable to create category'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE, 512);
+		echo json_encode(['message' => 'Unable to create user'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE, 512);
 	}
 } else {
 	// send to user - incomplete data
@@ -37,5 +37,5 @@ if (!empty($data['title'])) {
 	http_response_code(400);
 
 	// send to user
-	echo json_encode(['message' => 'Unable to create category. Incomplete data'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE, 512);
+	echo json_encode(['message' => 'Unable to create user. Incomplete data'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE, 512);
 }

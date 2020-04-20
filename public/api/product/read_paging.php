@@ -12,14 +12,15 @@ $utilities = new Utilities();
 
 // Request product
 $stmt = $product->readPaging($from_record_num, $records_per_page);
-$num = oci_num_fields($stmt);
+$first = oci_fetch_assoc($stmt);
+$num = oci_num_rows($stmt);
 
 // if rows more than 0
 if ($num > 0) {
 
 	// Products array
 	$product_arr = array();
-	$product_arr['records'] = array();
+	$product_arr['records'] = [$first];
 	$product_arr['paging'] = array();
 
 	// Get content from our table
