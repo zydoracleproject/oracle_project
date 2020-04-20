@@ -10,6 +10,7 @@
 			return {};
 		},
 		mounted() {
+			this.read();
 		},
 		methods: {
 			login() {

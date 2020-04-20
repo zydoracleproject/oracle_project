@@ -32,19 +32,8 @@ class Product
 	public function read()
 	{
 		// Choose all records
-		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title,
- 							p.model, p.price, p.status, p.pop_status, p.amount,
-							p.keywords, p.description, p.manufacturer_id,
-							p.category_id, p.created_at, p.updated_at,
-							i.image_1, i.image_2, i.image_3,
-							o.execution, o.appointment, o.power, o.premises,
-							o.height, o.width, o.depth, chamber, o.warranty
-							FROM ' . $this->table_name . ' p
-							LEFT JOIN categories c ON (p.category_id = c.id)
-							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
-							LEFT JOIN images i ON (p.id = i.product_id)
-							LEFT JOIN options o ON (p.id = o.product_id)
-							ORDER BY p.created_at DESC';
+		$query = 'SELECT * FROM ' . $this->table_name . '_view
+							ORDER BY created_at DESC';
 
 		// Make request
 		$stmt = oci_parse($this->conn, $query);
@@ -99,16 +88,7 @@ class Product
 	{
 
 		// request for reading one record (product)
-		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
-							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
-							p.manufacturer_id, p.category_id, p.created_at, p.updated_at,
-							i.image_1, i.image_2, i.image_3,
-							o.execution, o.appointment, o.power, o.premises, o.height, o.width, o.depth, o.chamber, o.warranty
-							FROM ' . $this->table_name . ' p 
-							LEFT JOIN categories c ON (p.category_id = c.id)
-							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
-							LEFT JOIN images i ON (p.id = i.product_id)
-							LEFT JOIN options o ON (p.id = o.product_id)
+		$query = 'SELECT * FROM ' . $this->table_name .  '_view
 							WHERE p.id = :id';
 
 		// Preparing request
@@ -228,16 +208,7 @@ class Product
 	public function search($keywords)
 	{
 		// select from all records
-		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
-							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
-							p.manufacturer_id, p.category_id, p.created_at, p.updated_at,
-							i.image_1, i.image_2, i.image_3,
-							o.execution, o.appointment, o.power, o.premises, o.height, o.width, o.depth, o.chamber, o.warranty
-							FROM ' . $this->table_name . ' p 
-							LEFT JOIN categories c ON (p.category_id = c.id)
-							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
-							LEFT JOIN images i ON (p.id = i.product_id)
-							LEFT JOIN options o ON (p.id = o.product_id)
+		$query = 'SELECT * FROM ' . $this->table_name . '_view
 							WHERE p.title LIKE :keywords OR c.title LIKE :keywords OR m.title LIKE :keywords';
 
 		// preparing query
@@ -261,16 +232,7 @@ class Product
 	{
 
 		// Selecting
-		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
-							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
-							p.manufacturer_id, p.category_id, p.created_at, p.updated_at,
-							i.image_1, i.image_2, i.image_3,
-							o.execution, o.appointment, o.power, o.premises, o.height, o.width, o.depth, o.chamber, o.warranty
-							FROM ' . $this->table_name . ' p 
-							LEFT JOIN categories c ON (p.category_id = c.id)
-							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
-							LEFT JOIN images i ON (p.id = i.product_id)
-							LEFT JOIN options o ON (p.id = o.product_id)
+		$query = 'SELECT * FROM ' . $this->table_name . '_view
 							WHERE rownum BETWEEN :f AND :t
 							ORDER BY p.created_at DESC';
 
@@ -306,16 +268,7 @@ class Product
 	public function readByMan($id)
 	{
 		// select from all records
-		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
-							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
-							p.manufacturer_id, p.category_id, p.created_at, p.updated_at,
-							i.image_1, i.image_2, i.image_3,
-							o.execution, o.appointment, o.power, o.premises, o.height, o.width, o.depth, o.chamber, o.warranty
-							FROM ' . $this->table_name . ' p 
-							LEFT JOIN categories c ON (p.category_id = c.id)
-							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
-							LEFT JOIN images i ON (p.id = i.product_id)
-							LEFT JOIN options o ON (p.id = o.product_id)
+		$query = 'SELECT * FROM ' . $this->table_name .'_view
 							WHERE p.manufacturer_id = :id';
 
 		// preparing query
@@ -337,16 +290,7 @@ class Product
 	public function readByCat($id)
 	{
 		// select from all records
-		$query = 'SELECT c.title as category_title, m.title as manufacturer_title, p.id, p.title, p.content, p.model,
-							p.price, p.status, p.pop_status, p.amount, p.keywords, p.description,
-							p.manufacturer_id, p.category_id, p.created_at, p.updated_at,
-							i.image_1, i.image_2, i.image_3,
-							o.execution, o.appointment, o.power, o.premises, o.height, o.width, o.depth, o.chamber, o.warranty
-							FROM ' . $this->table_name . ' p 
-							LEFT JOIN categories c ON (p.category_id = c.id)
-							LEFT JOIN manufacturers m ON (p.manufacturer_id = m.id)
-							LEFT JOIN images i ON (p.id = i.product_id)
-							LEFT JOIN options o ON (p.id = o.product_id)
+		$query = 'SELECT * FROM ' . $this->table_name .'_view
 							WHERE p.category_id = :id';
 
 		// preparing query
