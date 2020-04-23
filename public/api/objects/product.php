@@ -176,8 +176,6 @@ class Product
 			return true;
 		}
 
-		var_dump(oci_error($stmt));
-
 		return false;
 	}
 

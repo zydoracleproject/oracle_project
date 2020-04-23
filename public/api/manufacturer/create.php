@@ -13,7 +13,6 @@ if (!empty($data['title'])) {
 	// set fields for products
 	$manufacturer->title = $data['title'];
 	$manufacturer->category_id = $data['category_id'];
-	$manufacturer->logo_image = $data['logo_image'];
 	$manufacturer->keywords = $data['keywords'];
 	$manufacturer->description = $data['description'];
 	$manufacturer->created_at = date('m/d/Y H:i:s');

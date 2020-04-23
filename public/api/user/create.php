@@ -9,7 +9,6 @@ date_default_timezone_set('Asia/Aqtobe');
 include_once '../layouts/user_inc.php';
 
 if (!empty($data['u_username']) && !empty($data['u_password']) && !empty($data['phone'])) {
-
 	// set fields for products
 	$user->username = $data['u_username'];
 	$user->password = md5($data['u_password']);

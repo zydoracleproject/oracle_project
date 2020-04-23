@@ -7,7 +7,7 @@ class Manufacturer
 	private $table_name = 'manufacturers';
 
 	// Table columns
-	public $id, $title, $category_id, $logo_image, $keywords, $description, $created_at, $updated_at;
+	public $id, $title, $category_id, $keywords, $description, $created_at, $updated_at;
 
 	public function __construct($db)
 	{
@@ -31,8 +31,8 @@ class Manufacturer
 	{
 		// request for inserting records
 		$query = 'INSERT INTO ' . $this->table_name . " 
-							(title, category_id, logo_image,  keywords, description, created_at) 
-							VALUES (:title, :category_id, :logo_image :keywords, :description, TO_TIMESTAMP(TO_DATE(:created_at, 'MM/DD/YYYY HH24:MI:SS')))";
+							(title, category_id, keywords, description, created_at) 
+							VALUES (:title, :category_id, :keywords, :description, TO_TIMESTAMP(TO_DATE(:created_at, 'MM/DD/YYYY HH24:MI:SS')))";
 
 		$stmt = oci_parse($this->conn, $query);
 
@@ -57,7 +57,6 @@ class Manufacturer
 							SET 
 									title = :title,
 									category_id = :category_id,
-									logo_image = :logo_image,
 									keywords = :keywords,
 									description = :description,
 									created_at = :created_at,
@@ -127,7 +126,6 @@ class Manufacturer
 		// Set product data
 		$this->title = $row['TITLE'];
 		$this->category_id = $row['CATEGORY_ID'];
-		$this->logo_image = $row['LOGO_IMAGE'];
 		$this->keywords = $row['KEYWORDS'];
 		$this->description = $row['DESCRIPTION'];
 		$this->created_at = $row['CREATED_AT'];
@@ -139,7 +137,6 @@ class Manufacturer
 		// cleaning
 		$this->title = htmlspecialchars(strip_tags($this->title));
 		$this->category_id = htmlspecialchars(strip_tags($this->category_id));
-		$this->logo_image = htmlspecialchars(strip_tags($this->logo_image));
 		$this->keywords = htmlspecialchars(strip_tags($this->keywords));
 		$this->description = htmlspecialchars(strip_tags($this->description));
 		$this->created_at = htmlspecialchars(strip_tags($this->created_at));
@@ -151,7 +148,6 @@ class Manufacturer
 		// set values
 		oci_bind_by_name($stmt, ':title', $this->title);
 		oci_bind_by_name($stmt, ':category_id', $this->category_id);
-		oci_bind_by_name($stmt, ':logo_image', $this->logo_image);
 		oci_bind_by_name($stmt, ':keywords', $this->keywords);
 		oci_bind_by_name($stmt, ':description', $this->description);
 		oci_bind_by_name($stmt, ':created_at', $this->created_at);

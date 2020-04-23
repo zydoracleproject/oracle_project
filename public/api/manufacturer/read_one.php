@@ -19,7 +19,6 @@ if ($manufacturer->title) {
 		'id' => $manufacturer->id,
 		'title' => $manufacturer->title,
 		'category_id' => $manufacturer->category_id,
-		'logo_image' => $manufacturer->logo_image,
 		'keywords' => $manufacturer->keywords,
 		'description' => $manufacturer->description,
 		'created_at' => $manufacturer->created_at,

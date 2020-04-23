@@ -15,7 +15,6 @@ $manufacturer->id = $data['id'];
 // set product data
 $manufacturer->title = $data['title'];
 $manufacturer->category_id = $data['category_id'];
-$manufacturer->logo_image = $data['logo_image'];
 $manufacturer->keywords = $data['keywords'];
 $manufacturer->description = $data['description'];
 $manufacturer->created_at = $data['created_at'];
