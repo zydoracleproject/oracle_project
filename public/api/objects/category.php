@@ -19,7 +19,9 @@ class Category
 	public function read()
 	{
 		// query for selecting
-		$query = 'SELECT * FROM ' . $this->table_name . ' ORDER BY created_at';
+		$query = "SELECT id, title, keywords, description, TO_CHAR(created_at, 'DD Mon YYYY HH24:MI:SS') AS CREATED_AT,
+							TO_CHAR(updated_at, 'DD Mon YYYY HH24:MI:SS') AS UPDATED_AT
+							FROM " . $this->table_name . ' ORDER BY created_at';
 
 		$stmt = oci_parse($this->conn, $query);
 		oci_execute($stmt);
@@ -33,7 +35,7 @@ class Category
 		// request for inserting records
 		$query = 'INSERT INTO ' . $this->table_name . " 
 							(title, keywords, description, created_at) 
-							VALUES (:title, :keywords, :description, TO_TIMESTAMP(TO_DATE(:created_at, 'MM/DD/YYYY HH24:MI:SS')))";
+							VALUES (:title, :keywords, :description, TO_TIMESTAMP(:created_at, 'MM/DD/YYYY HH24:MI:SS'))";
 
 		$stmt = oci_parse($this->conn, $query);
 
@@ -59,8 +61,8 @@ class Category
 									title = :title,
 									keywords = :keywords,
 									description = :description,
-									created_at = :created_at,
-									updated_at = TO_TIMESTAMP(TO_DATE(:updated_at, 'MM/DD/YYYY HH24:MI:SS'))
+									created_at = TO_TIMESTAMP(:created_at, 'DD Mon YYYY HH24:MI:SS'),
+									updated_at = TO_TIMESTAMP(:updated_at, 'MM/DD/YYYY HH24:MI:SS')
 							WHERE id = :id";
 
 		// preparing query

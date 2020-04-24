@@ -2,6 +2,7 @@ import Login from "../../views/admin/Login";
 import Products from "../../views/admin/Products";
 import CreateProducts from "../../views/admin/CreateProducts";
 import UpdateProducts from "../../views/admin/UpdateProducts";
+import Categories from "../../views/admin/Categories";
 
 export const adminRoutes = [
 	{
@@ -24,5 +25,10 @@ export const adminRoutes = [
 		component: UpdateProducts,
 		name: 'product_update',
 		props: true,
-	}
+	},
+	{
+		path: 'categories',
+		component: Categories,
+		name: 'admin_categories'
+	},
 ];

@@ -19,6 +19,15 @@
       </div>
       <spinner size="large" v-if="isProductsLoading"></spinner>
       <div class="row">
+        <v-alert
+          v-if="!getProducts.length"
+          type="info"
+          dense
+          class="my-2 pa-3 py-3"
+          color="grey"
+        >
+          В магазине не имеется товаров!
+        </v-alert>
         <div class="wrapper col-12 col-sm-6 col-md-4 p-2"
              v-for="product in getProducts"
              :key="product.id">

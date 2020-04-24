@@ -7,7 +7,6 @@ export default {
 		productsByCat: [],
 		productOne: null,
 		productError: '',
-		productSuccess: '',
 		searchResults: [],
 		created: false,
 		updated: false,
@@ -28,9 +27,6 @@ export default {
 		},
 		getProductError(state) {
 			return state.productError;
-		},
-		getProductSuccess(state) {
-			return state.productSuccess;
 		},
 		getSearchResults(state) {
 			return state.searchResults;
@@ -54,9 +50,6 @@ export default {
 		},
 		setProductError(state, value) {
 			state.productError = value;
-		},
-		setProductSuccess(state, value) {
-			state.productSuccess = value;
 		},
 		setSearchResults(state, data) {
 			state.searchResults = data;
@@ -105,7 +98,6 @@ export default {
 				}
 			}).then((response) => {
 				if (response.data) {
-					context.commit('setProductSuccess', response.data.message);
 					context.commit('setCreated', true);
 					context.commit('setProductsLoading', false);
 				}
@@ -123,7 +115,6 @@ export default {
 			}).then((response) => {
 				if (response.data) {
 					console.log(response.data);
-					context.commit('setProductSuccess', response.data.message);
 					context.commit('setUpdated', true);
 				}
 			}).catch((error) => {
@@ -131,11 +122,7 @@ export default {
 			});
 		},
 		deleteProduct(context, data) {
-			axios.post(context.getters.getUrl + 'api/product/delete.php', JSON.stringify(data)).then((response) => {
-				if (response.data) {
-					context.commit('setProductSuccess', response.data.message);
-				}
-			}).catch((error) => {
+			axios.post(context.getters.getUrl + 'api/product/delete.php', JSON.stringify(data)).catch((error) => {
 				context.commit('setProductError', error.message);
 			});
 		},

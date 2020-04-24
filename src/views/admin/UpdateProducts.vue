@@ -14,6 +14,14 @@
     </v-row>
 
     <v-container fluid>
+      <v-alert
+        v-if="getProductError"
+        class="white--text ma-5 col-10"
+        type="error"
+        elevation="5"
+      >
+        {{getProductError}}
+      </v-alert>
       <spinner size="large" v-if="isProductsLoading" class="ma-2"></spinner>
       <v-form lazy-validation ref="form">
         <v-card elevation="6">
@@ -44,7 +52,7 @@
               ></v-text-field>
               <v-select
                 v-model="category"
-                :items="categories"
+                :items="getCategories"
                 return-object
                 item-text="title"
                 item-value="id"
@@ -183,12 +191,14 @@
 			image_1: null,
 			image_2: null,
 			image_3: null,
-			categories: [],
 			manufacturers: [],
 			created_at: '',
 		}),
 		computed: {
-			...mapGetters(['getAdmin', 'isUpdated', 'isProductsLoading', 'getProductOne']),
+			...mapGetters(['getAdmin', 'isUpdated', 'isProductsLoading', 'getProductOne', 'getProductError']),
+			getCategories() {
+				return this.$store.getters.getCategories.map((item) => ({id: item.id, title: item.title}));
+			}
 		},
 		mounted() {
 			this.$store.dispatch('readOne', {
@@ -223,8 +233,15 @@
 					this.loaded = true;
 				}
 			}, 500);
+			this.readCategory();
 		},
 		methods: {
+			readCategory() {
+				this.$store.dispatch('readCategories', {
+					username: btoa(this.getAdmin.username),
+					password: btoa(this.getAdmin.password),
+				});
+			},
 			clear() {
 				this.$refs.form.reset();
 			},
@@ -245,8 +262,8 @@
 						content: this.content,
 						pop_status: this.pop_status,
 						amount: this.amount,
-						category_id: this.category.id,
-						manufacturer_id: this.manufacturer.id,
+						category_id: this.category ? this.category.id : '',
+						manufacturer_id: this.manufacturer ? this.manufacturer.id : '',
 						execution: this.execution,
 						appointment: this.appointment,
 						power: this.power,
