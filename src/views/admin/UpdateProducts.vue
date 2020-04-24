@@ -9,12 +9,13 @@
         type="info"
         elevation="5"
       >
-        Создание товара
+        Редактирование товара
       </v-alert>
     </v-row>
+
     <v-container fluid>
       <spinner size="large" v-if="isProductsLoading" class="ma-2"></spinner>
-      <v-form lazy-validation ref="form" v-model="valid">
+      <v-form lazy-validation ref="form">
         <v-card elevation="6">
           <v-row class="pa-2">
             <v-col class="pa-5" cols="col-12 col-md-4">
@@ -55,7 +56,7 @@
                 label="Производитель товара"
               ></v-select>
               <v-row class="align-center mt-10 pa-3">
-                <v-btn @click="submit" color="success" class="ma-2">Создать</v-btn>
+                <v-btn @click="submit" color="success" class="ma-2">Подтвердить</v-btn>
                 <v-btn @click="clear" class="ma-2">Очистить</v-btn>
               </v-row>
             </v-col>
@@ -117,6 +118,12 @@
                   label="Описание"
                   class="col-12"
                 ></v-textarea>
+                <v-img class="col-4 pa-1" :src="'/images/' + (image_1 || 'notimage.png')">
+                </v-img>
+                <v-img class="col-4 pa-1" :src="'/images/' + (image_2 || 'notimage.png')">
+                </v-img>
+                <v-img class="col-4 pa-1" :src="'/images/' + (image_3 || 'notimage.png')">
+                </v-img>
                 <v-file-input
                   label="Картинка товара 1"
                   filled
@@ -151,9 +158,10 @@
 	import {mapGetters} from 'vuex';
 
 	export default {
-		name: "CreateProducts",
+		name: "UpdateProducts",
+		props: ['id'],
 		data: () => ({
-			valid: true,
+      loaded: false,
 			required: [v => !!v || 'Обязательное поле!'],
 			title: '',
 			model: '',
@@ -177,12 +185,44 @@
 			image_3: null,
 			categories: [],
 			manufacturers: [],
+			created_at: '',
 		}),
 		computed: {
-			...mapGetters(['getAdmin', 'isCreated', 'isProductsLoading']),
+			...mapGetters(['getAdmin', 'isUpdated', 'isProductsLoading', 'getProductOne']),
 		},
 		mounted() {
-			this.clear();
+			this.$store.dispatch('readOne', {
+				username: btoa(this.getAdmin.username),
+				password: btoa(this.getAdmin.password),
+				id: this.id,
+			});
+
+			setTimeout(() => {
+				if (this.getProductOne && !this.loaded) {
+					this.title = this.getProductOne.title;
+					this.model = this.getProductOne.model;
+					this.price = this.getProductOne.price;
+					this.content = this.getProductOne.content;
+					this.pop_status = this.getProductOne.pop_status;
+					this.amount = this.getProductOne.amount;
+					this.category = {id: this.getProductOne.category_id, title: this.getProductOne.category_title};
+					this.manufacturer = {id: this.getProductOne.manufacturer_id, title: this.getProductOne.manufacturer_title};
+					this.execution = this.getProductOne.execution;
+					this.appointment = this.getProductOne.appointment;
+					this.power = this.getProductOne.power;
+					this.premises = this.getProductOne.premises;
+					this.height = this.getProductOne.height;
+					this.width = this.getProductOne.width;
+					this.depth = this.getProductOne.depth;
+					this.chamber = this.getProductOne.chamber;
+					this.warranty = this.getProductOne.warranty;
+					this.image_1 = this.getProductOne.image_1;
+					this.image_2 = this.getProductOne.image_2;
+					this.image_3 = this.getProductOne.image_3;
+					this.created_at = this.getProductOne.created_at;
+					this.loaded = true;
+				}
+			}, 500);
 		},
 		methods: {
 			clear() {
@@ -191,21 +231,22 @@
 			submit() {
 				if (this.$refs.form.validate()) {
 					let formData = new FormData();
-					if (this.image_1) formData.append('image_1', this.image_1);
-					if (this.image_2) formData.append('image_2', this.image_2);
-					if (this.image_3) formData.append('image_3', this.image_3);
+					if (typeof this.image_1 === 'object') formData.append('image_1', this.image_1);
+					if (typeof this.image_2 === 'object') formData.append('image_2', this.image_2);
+					if (typeof this.image_3 === 'object') formData.append('image_3', this.image_3);
 
 					const data = {
 						username: btoa(this.getAdmin.username),
 						password: btoa(this.getAdmin.password),
+            id: this.id,
 						title: this.title,
 						model: this.model,
 						price: this.price,
 						content: this.content,
 						pop_status: this.pop_status,
 						amount: this.amount,
-						category: this.category,
-						manufacturer: this.manufacturer,
+						category_id: this.category.id,
+						manufacturer_id: this.manufacturer.id,
 						execution: this.execution,
 						appointment: this.appointment,
 						power: this.power,
@@ -215,14 +256,19 @@
 						depth: this.depth,
 						chamber: this.chamber,
 						warranty: this.warranty,
+						created_at: this.created_at,
 					};
+
+					if (typeof this.image_1 === 'string') data['image_1'] = this.image_1;
+					if (typeof this.image_2 === 'string') data['image_2'] = this.image_2;
+					if (typeof this.image_3 === 'string') data['image_3'] = this.image_3;
 
 					formData.append('data', JSON.stringify(data));
 
-					this.$store.dispatch('createProduct', formData);
+					this.$store.dispatch('updateProduct', formData);
 
 					setTimeout(() => {
-						if (this.isCreated) {
+						if (this.isUpdated) {
 							this.$router.push({name: 'admin_products'});
 						}
 					}, 500);

@@ -5,6 +5,7 @@ export default {
 		products: [],
 		productsByMan: [],
 		productsByCat: [],
+		productOne: null,
 		productError: '',
 		productSuccess: '',
 		searchResults: [],
@@ -21,6 +22,9 @@ export default {
 		},
 		getProductsByCat(state) {
 			return state.productsByCat;
+		},
+		getProductOne(state) {
+			return state.productOne;
 		},
 		getProductError(state) {
 			return state.productError;
@@ -44,6 +48,9 @@ export default {
 	mutations: {
 		setProducts(state, data) {
 			state.products = data;
+		},
+		setProductOne(state, data) {
+			state.productOne = data;
 		},
 		setProductError(state, value) {
 			state.productError = value;
@@ -90,6 +97,7 @@ export default {
 		},
 		createProduct(context, data) {
 			context.commit('setCreated', false);
+			context.commit('setProductsLoading', true);
 
 			axios.post(context.getters.getUrl + 'api/product/create.php', data, {
 				headers: {
@@ -99,19 +107,24 @@ export default {
 				if (response.data) {
 					context.commit('setProductSuccess', response.data.message);
 					context.commit('setCreated', true);
+					context.commit('setProductsLoading', false);
 				}
 			}).catch((error) => {
 				context.commit('setProductError', error.message);
 			});
 		},
 		updateProduct(context, data) {
+			context.commit('setUpdated', false);
+
 			axios.post(context.getters.getUrl + 'api/product/update.php', data, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				}
 			}).then((response) => {
 				if (response.data) {
+					console.log(response.data);
 					context.commit('setProductSuccess', response.data.message);
+					context.commit('setUpdated', true);
 				}
 			}).catch((error) => {
 				context.commit('setProductError', error.message);
@@ -153,5 +166,17 @@ export default {
 				context.commit('setProductError', error.message);
 			});
 		},
+		readOne(context, data) {
+			context.commit('setProductsLoading', true);
+
+			axios.post(context.getters.getUrl + 'api/product/read_one.php', JSON.stringify(data)).then((response) => {
+				if (response.data) {
+					context.commit('setProductOne', response.data);
+					context.commit('setProductsLoading', false);
+				}
+			}).catch((error) => {
+				context.commit('setProductError', error.message);
+			});
+		}
 	}
 };

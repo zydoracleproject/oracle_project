@@ -89,7 +89,7 @@ class Product
 
 		// request for reading one record (product)
 		$query = 'SELECT * FROM ' . $this->table_name .  '_view
-							WHERE p.id = :id';
+							WHERE id = :id';
 
 		// Preparing request
 		$stmt = oci_parse($this->conn, $query);
@@ -107,7 +107,7 @@ class Product
 		$this->title = $row['TITLE'];
 		$this->content = $row['CONTENT'];
 		$this->model = $row['MODEL'];
-		$this->price = $row['PRICE'];
+		$this->price = (int)str_replace(',', '', $row['PRICE']);
 		$this->status = $row['STATUS'];
 		$this->pop_status = $row['POP_STATUS'];
 		$this->amount = $row['AMOUNT'];
@@ -117,6 +117,18 @@ class Product
 		$this->category_id = $row['CATEGORY_ID'];
 		$this->created_at = $row['CREATED_AT'];
 		$this->updated_at = $row['UPDATED_AT'];
+		$this->images['image_1'] = $row['IMAGE_1'];
+		$this->images['image_2'] = $row['IMAGE_2'];
+		$this->images['image_3'] = $row['IMAGE_3'];
+		$this->options['execution'] = $row['EXECUTION'];
+		$this->options['appointment'] = $row['APPOINTMENT'];
+		$this->options['power'] = $row['POWER'];
+		$this->options['premises'] = $row['PREMISES'];
+		$this->options['height'] = $row['HEIGHT'];
+		$this->options['width'] = $row['WIDTH'];
+		$this->options['depth'] = $row['DEPTH'];
+		$this->options['chamber'] = $row['CHAMBER'];
+		$this->options['warranty'] = $row['WARRANTY'];
 	}
 
 	// method update() - updating product
@@ -136,7 +148,7 @@ class Product
 									description = :description,
 									manufacturer_id = :manufacturer_id,
 									category_id = :category_id,
-									created_at = :created_at,
+									created_at = TO_TIMESTAMP(:created_at, 'DD Mon YYYY HH24:MI:SS'),
 									updated_at = TO_TIMESTAMP(:updated_at, 'MM/DD/YYYY HH24:MI:SS')
 							WHERE id = :id;
 							UPDATE images 
@@ -175,6 +187,8 @@ class Product
 		if (oci_execute($stmt)) {
 			return true;
 		}
+
+		var_dump(oci_error($stmt));
 
 		return false;
 	}

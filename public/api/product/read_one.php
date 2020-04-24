@@ -30,6 +30,18 @@ if ($product->title) {
 		'category_id' => $product->category_id,
 		'created_at' => $product->created_at,
 		'updated_at' => $product->updated_at,
+		'image_1' => $product->images['image_1'],
+		'image_2' => $product->images['image_2'],
+		'image_3' => $product->images['image_3'],
+		'execution' => $product->options['execution'],
+		'appointment' => $product->options['appointment'],
+		'power' => $product->options['power'],
+		'premises' => $product->options['premises'],
+		'height' => $product->options['height'],
+		'width' => $product->options['width'],
+		'depth' => $product->options['depth'],
+		'chamber' => $product->options['chamber'],
+		'warranty' => $product->options['warranty'],
 	];
 
 	// Status code - 200 OK

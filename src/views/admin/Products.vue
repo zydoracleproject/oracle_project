@@ -18,14 +18,13 @@
           elevation="5">Создать товар</v-btn>
       </div>
       <spinner size="large" v-if="isProductsLoading"></spinner>
-      <div class="row justify-space-between">
+      <div class="row">
         <div class="wrapper col-12 col-sm-6 col-md-4 p-2"
              v-for="product in getProducts"
              :key="product.id">
-          <v-card>
-            <v-row class="justify-space-between align-center mx-0">
+          <v-card elevation="8">
+            <v-row class="justify-space-between align-center mx-0 py-2">
               <v-chip
-                class="my-2"
                 color="pink"
                 label
                 text-color="white"
@@ -37,6 +36,7 @@
               <v-chip
                 right
                 label
+                class="ml-auto"
                 color="pink"
                 text-color="white"
                 style="font-size: 18px;"
@@ -86,10 +86,13 @@
               </v-alert>
               <v-divider></v-divider>
               <v-subheader>
-                Создана - {{product.created_at}}
+                Создано - {{product.created_at}}
               </v-subheader>
               <v-subheader v-if="product.updated_at">
-                Обновлена - {{product.updated_at}}
+                Обновлено - {{product.updated_at}}
+              </v-subheader>
+              <v-subheader>
+                Количество - {{product.amount || 0}}
               </v-subheader>
             </v-card-text>
             <v-expansion-panels class="mb-3">
@@ -158,8 +161,11 @@
             </v-expansion-panels>
             <v-divider></v-divider>
             <v-row class="mx-0">
-              <v-btn color="yellow darken-3" class="white--text ma-3">Редактировать</v-btn>
-              <v-btn color="red" class="white--text ma-3">Удалить</v-btn>
+              <v-btn
+                :to="{name: 'product_update', params: {id: product.id}}"
+                color="yellow darken-3"
+                class="white--text ma-3">Редактировать</v-btn>
+              <v-btn color="red" class="white--text ma-3" @click="deleteProduct(product.id)">Удалить</v-btn>
             </v-row>
           </v-card>
         </div>
@@ -180,6 +186,16 @@
     },
     mounted() {
 			this.$store.dispatch('readProducts', this.getAdmin);
+    },
+    methods: {
+			deleteProduct(id) {
+				this.$store.dispatch('deleteProduct', {
+					username: btoa(this.getAdmin.username),
+          password: btoa(this.getAdmin.password),
+          id,
+        });
+				location.reload();
+      }
     },
 	}
 </script>

@@ -1,6 +1,7 @@
 import Login from "../../views/admin/Login";
 import Products from "../../views/admin/Products";
 import CreateProducts from "../../views/admin/CreateProducts";
+import UpdateProducts from "../../views/admin/UpdateProducts";
 
 export const adminRoutes = [
 	{
@@ -18,4 +19,10 @@ export const adminRoutes = [
 		component: CreateProducts,
 		name: 'product_create',
 	},
+	{
+		path: 'products/update/:id',
+		component: UpdateProducts,
+		name: 'product_update',
+		props: true,
+	}
 ];

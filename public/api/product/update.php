@@ -14,7 +14,7 @@ function getFileName($title, $file)
 		return base64_encode($title) . '/' . $file . '.' . end($array);
 	}
 
-	return '';
+	return null;
 }
 
 // get product_id for editing
@@ -48,9 +48,9 @@ $product->manufacturer_id = $data['manufacturer_id'];
 $product->category_id = $data['category_id'];
 $product->created_at = $data['created_at'];
 $product->updated_at = date('m/d/Y H:i:s');
-$product->images['image_1'] = getFileName($data['title'], 'image_1');
-$product->images['image_2'] = getFileName($data['title'], 'image_2');
-$product->images['image_3'] = getFileName($data['title'], 'image_3');
+$product->images['image_1'] = getFileName($data['title'], 'image_1') ?? $data['image_1'];
+$product->images['image_2'] = getFileName($data['title'], 'image_2') ?? $data['image_2'];
+$product->images['image_3'] = getFileName($data['title'], 'image_3') ?? $data['image_3'];
 $product->options['execution'] = $data['execution'];
 $product->options['appointment'] = $data['appointment'];
 $product->options['power'] = $data['power'];
