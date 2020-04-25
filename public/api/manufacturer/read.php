@@ -31,7 +31,7 @@ if ($num > 0) {
 	http_response_code(200);
 
 	// Send to user
-	echo json_encode($manufacturer_item, JSON_THROW_ON_ERROR, 512);
+	echo json_encode($manufacturer_arr, JSON_THROW_ON_ERROR, 512);
 } else {
 
 	// Status code - 404 Not Found

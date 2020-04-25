@@ -18,7 +18,12 @@ class Manufacturer
 	public function read()
 	{
 		// query for selecting
-		$query = 'SELECT * FROM ' . $this->table_name . ' ORDER BY created_at';
+		$query = "SELECT m.id, m.title, c.title AS CATEGORY_TITLE, m.category_id, m.keywords, m.description,
+       				TO_CHAR(m.created_at, 'DD Mon YYYY HH24:MI:SS') AS CREATED_AT,
+       				TO_CHAR(m.updated_at, 'DD Mon YYYY HH24:MI:SS') AS UPDATED_AT
+							FROM " . $this->table_name . ' m
+							JOIN categories c ON (m.category_id = c.id)
+							ORDER BY created_at';
 
 		$stmt = oci_parse($this->conn, $query);
 		oci_execute($stmt);
@@ -32,7 +37,7 @@ class Manufacturer
 		// request for inserting records
 		$query = 'INSERT INTO ' . $this->table_name . " 
 							(title, category_id, keywords, description, created_at) 
-							VALUES (:title, :category_id, :keywords, :description, TO_TIMESTAMP(TO_DATE(:created_at, 'MM/DD/YYYY HH24:MI:SS')))";
+							VALUES (:title, :category_id, :keywords, :description, TO_TIMESTAMP(:created_at, 'MM/DD/YYYY HH24:MI:SS'))";
 
 		$stmt = oci_parse($this->conn, $query);
 
@@ -59,8 +64,8 @@ class Manufacturer
 									category_id = :category_id,
 									keywords = :keywords,
 									description = :description,
-									created_at = :created_at,
-									updated_at = TO_TIMESTAMP(TO_DATE(:updated_at, 'MM/DD/YYYY HH24:MI:SS'))
+									created_at = TO_TIMESTAMP(:created_at, 'DD Mon YYYY HH24:MI:SS'),
+									updated_at = TO_TIMESTAMP(:updated_at, 'MM/DD/YYYY HH24:MI:SS')
 							WHERE id = :id";
 
 		// preparing query

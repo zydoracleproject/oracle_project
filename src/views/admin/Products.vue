@@ -191,7 +191,7 @@
     data: () => ({
     }),
     computed: {
-			...mapGetters(['getProducts', 'getAdmin', 'isProductsLoading']),
+			...mapGetters(['getProducts', 'getAdmin', 'isProductsLoading', 'getProductError']),
     },
     mounted() {
 			this.$store.dispatch('readProducts', this.getAdmin);
@@ -203,7 +203,11 @@
           password: btoa(this.getAdmin.password),
           id,
         });
-				location.reload();
+				setTimeout(() => {
+					if (!this.getProductError) {
+						this.$store.dispatch('readProducts', this.getAdmin);
+          }
+        }, 500)
       }
     },
 	}

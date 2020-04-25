@@ -21,7 +21,7 @@
       >
         {{getProductError}}
       </v-alert>
-      <spinner size="large" v-if="isProductsLoading" class="ma-2"></spinner>
+      <spinner size="large" v-if="isProductsLoading && !getProductError" class="ma-2"></spinner>
       <v-form lazy-validation ref="form" v-model="valid">
         <v-card elevation="6">
           <v-row class="pa-2">

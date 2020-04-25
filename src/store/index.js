@@ -1,6 +1,7 @@
 import {adminStore} from "./modules/admin";
 import products from "./modules/products";
 import categories from "./modules/categories";
+import manufacturers from "./modules/manufacturers";
 
 export default {
 	state: {
@@ -15,5 +16,6 @@ export default {
 		adminStore,
 		products,
 		categories,
+		manufacturers,
 	},
 };

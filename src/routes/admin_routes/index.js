@@ -3,6 +3,7 @@ import Products from "../../views/admin/Products";
 import CreateProducts from "../../views/admin/CreateProducts";
 import UpdateProducts from "../../views/admin/UpdateProducts";
 import Categories from "../../views/admin/Categories";
+import Manufacturers from "../../views/admin/Manufacturers";
 
 export const adminRoutes = [
 	{
@@ -31,4 +32,9 @@ export const adminRoutes = [
 		component: Categories,
 		name: 'admin_categories'
 	},
+	{
+		path: 'manufacturers',
+		component: Manufacturers,
+		name: 'admin_manufacturers',
+	}
 ];

@@ -85,7 +85,7 @@ export default {
 					context.commit('setProductsLoading', false);
 				}
 			}).catch((error) => {
-				context.commit('setProductError', error.message);
+				context.commit('setProductError', error.response.data);
 			});
 		},
 		createProduct(context, data) {
@@ -102,7 +102,7 @@ export default {
 					context.commit('setProductsLoading', false);
 				}
 			}).catch((error) => {
-				context.commit('setProductError', error.message);
+				context.commit('setProductError', error.response.data);
 			});
 		},
 		updateProduct(context, data) {
@@ -118,12 +118,12 @@ export default {
 					context.commit('setUpdated', true);
 				}
 			}).catch((error) => {
-				context.commit('setProductError', error.message);
+				context.commit('setProductError', error.response.data);
 			});
 		},
 		deleteProduct(context, data) {
 			axios.post(context.getters.getUrl + 'api/product/delete.php', JSON.stringify(data)).catch((error) => {
-				context.commit('setProductError', error.message);
+				context.commit('setProductError', error.response.data);
 			});
 		},
 		readByCat(context, data) {
@@ -132,7 +132,7 @@ export default {
 					context.commit('setProductsByCat', response.data);
 				}
 			}).catch((error) => {
-				context.commit('setProductError', error.message);
+				context.commit('setProductError', error.response.data);
 			});
 		},
 		readByMan(context, data) {
@@ -141,7 +141,7 @@ export default {
 					context.commit('setProductsByMan', response.data);
 				}
 			}).catch((error) => {
-				context.commit('setProductError', error.message);
+				context.commit('setProductError', error.response.data);
 			});
 		},
 		search(context, data) {
@@ -150,7 +150,7 @@ export default {
 					context.commit('setSearchResults', response.data);
 				}
 			}).catch((error) => {
-				context.commit('setProductError', error.message);
+				context.commit('setProductError', error.response.data);
 			});
 		},
 		readOne(context, data) {
@@ -162,7 +162,7 @@ export default {
 					context.commit('setProductsLoading', false);
 				}
 			}).catch((error) => {
-				context.commit('setProductError', error.message);
+				context.commit('setProductError', error.response.data);
 			});
 		}
 	}
