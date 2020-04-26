@@ -59,7 +59,10 @@
               ></v-select>
               <v-select
                 v-model="manufacturer"
-                :items="manufacturers"
+                :items="getManufacturers"
+                return-object
+                item-text="title"
+                item-value="id"
                 label="Производитель товара"
               ></v-select>
               <v-row class="align-center mt-10 pa-3">
@@ -183,21 +186,30 @@
 			image_1: null,
 			image_2: null,
 			image_3: null,
-			manufacturers: [],
 		}),
 		computed: {
 			...mapGetters(['getAdmin', 'isCreated', 'isProductsLoading', 'getProductError']),
-      getCategories() {
+			getCategories() {
 				return this.$store.getters.getCategories.map((item) => ({id: item.id, title: item.title}));
-      }
+			},
+			getManufacturers() {
+				return this.$store.getters.getManufacturers.filter(item => item.category_id === this.category.id) || [];
+			},
 		},
 		mounted() {
 			this.clear();
 			this.readCategory();
+			this.readMans();
 		},
 		methods: {
 			readCategory() {
 				this.$store.dispatch('readCategories', {
+					username: btoa(this.getAdmin.username),
+					password: btoa(this.getAdmin.password),
+				});
+			},
+			readMans() {
+				this.$store.dispatch('readMans', {
 					username: btoa(this.getAdmin.username),
 					password: btoa(this.getAdmin.password),
 				});

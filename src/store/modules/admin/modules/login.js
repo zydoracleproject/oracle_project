@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {deleteCookie, getCookie, setCookie} from "../../../../functions/cookies";
 
-export default {
+export const loginAdmin = {
 	state: {
 		authenticated: false,
 		admin: null,

@@ -15,7 +15,8 @@
           :to="{name: 'product_create'}"
           color="success"
           large
-          elevation="5">Создать товар</v-btn>
+          elevation="5">Создать товар
+        </v-btn>
       </div>
       <spinner size="large" v-if="isProductsLoading"></spinner>
       <div class="row">
@@ -29,7 +30,7 @@
           В магазине не имеется товаров!
         </v-alert>
         <div class="wrapper col-12 col-sm-6 col-md-4 p-2"
-             v-for="product in getProducts"
+             v-for="product in computedProducts"
              :key="product.id">
           <v-card elevation="8">
             <v-row class="justify-space-between align-center mx-0 py-2">
@@ -173,43 +174,66 @@
               <v-btn
                 :to="{name: 'product_update', params: {id: product.id}}"
                 color="yellow darken-3"
-                class="white--text ma-3">Редактировать</v-btn>
+                class="white--text ma-3">Редактировать
+              </v-btn>
               <v-btn color="red" class="white--text ma-3" @click="deleteProduct(product.id)">Удалить</v-btn>
             </v-row>
           </v-card>
         </div>
       </div>
+      <v-pagination
+        v-model="currentPage"
+        :length="numOfPages"
+      ></v-pagination>
     </v-container>
   </v-content>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex';
+	import {mapGetters} from 'vuex';
 
 	export default {
 		name: "Products",
-    data: () => ({
-    }),
-    computed: {
+		data: () => ({
+			currentPage: 1,
+			perPage: 6,
+		}),
+		computed: {
 			...mapGetters(['getProducts', 'getAdmin', 'isProductsLoading', 'getProductError']),
-    },
-    mounted() {
+			offset() {
+				return ((this.currentPage - 1) * this.perPage);
+			},
+			limit() {
+				return (this.offset + this.perPage);
+			},
+			numOfPages() {
+				return Math.ceil(this.getProducts.length / this.perPage);
+			},
+			computedProducts() {
+				if (this.offset > this.getProducts.length) {
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+					this.currentPage = this.numOfPages;
+				}
+				return this.getProducts.slice(this.offset, this.limit);
+			},
+		},
+		mounted() {
 			this.$store.dispatch('readProducts', this.getAdmin);
-    },
-    methods: {
+		},
+		methods: {
 			deleteProduct(id) {
 				this.$store.dispatch('deleteProduct', {
 					username: btoa(this.getAdmin.username),
-          password: btoa(this.getAdmin.password),
-          id,
-        });
+					password: btoa(this.getAdmin.password),
+					id,
+				});
 				setTimeout(() => {
 					if (!this.getProductError) {
 						this.$store.dispatch('readProducts', this.getAdmin);
-          }
-        }, 500)
-      }
-    },
+					}
+				}, 500)
+			}
+		},
 	}
 </script>
 

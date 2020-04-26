@@ -1,4 +1,5 @@
 import {adminStore} from "./modules/admin";
+import {userStore} from "./modules/user";
 import products from "./modules/products";
 import categories from "./modules/categories";
 import manufacturers from "./modules/manufacturers";
@@ -14,6 +15,7 @@ export default {
 	},
 	modules: {
 		adminStore,
+		userStore,
 		products,
 		categories,
 		manufacturers,

@@ -16,9 +16,10 @@ class User
 
 	public function read()
 	{
-		$query = 'SELECT username, phone, mail_index, 
-       				address, created_at, updated_at 
-							FROM ' . $this->table_name . ' ORDER BY created_at';
+		$query = "SELECT username, phone, mail_index, 
+       				address, TO_CHAR(created_at, 'DD Mon YYYY HH24:MI:SS') AS CREATED_AT,
+       				TO_CHAR(updated_at, 'DD Mon YYYY HH24:MI:SS') AS UPDATED_AT
+							FROM " . $this->table_name . ' ORDER BY created_at';
 
 		$stmt = oci_parse($this->conn, $query);
 
@@ -41,8 +42,8 @@ class User
 
 		if (!oci_num_rows($stmt)) {
 			$query = 'INSERT INTO ' . $this->table_name . " 
-							(username, password, phone, created_at)
-							VALUES (:username, :password, :phone, TO_TIMESTAMP(:created_at, 'MM/DD/YYYY HH24:MI:SS'))";
+							(username, password, phone, mail_index, address, created_at)
+							VALUES (:username, :password, :phone, :mail_index, :address, TO_TIMESTAMP(:created_at, 'MM/DD/YYYY HH24:MI:SS'))";
 			$stmt = oci_parse($this->conn, $query);
 
 			$this->clean();
@@ -50,6 +51,8 @@ class User
 			oci_bind_by_name($stmt, ':username', $this->username);
 			oci_bind_by_name($stmt, ':password', $this->password);
 			oci_bind_by_name($stmt, ':phone', $this->phone);
+			oci_bind_by_name($stmt, ':mail_index', $this->mail_index);
+			oci_bind_by_name($stmt, ':address', $this->address);
 			oci_bind_by_name($stmt, ':created_at', $this->created_at);
 
 			if (oci_execute($stmt)) {
@@ -62,25 +65,24 @@ class User
 
 	public function update()
 	{
-		$query = 'UPDATE ' . $this->table_name . '
+		$query = 'UPDATE ' . $this->table_name . "
 							SET
 									username = :username,
-									password = :password,
 									phone = :phone,
 									mail_index = :mail_index,
 									address = :address,
-									created_at = :created_at,
-									updated_at = :updated_at
-							WHERE id = :id';
+									created_at = TO_TIMESTAMP(:created_at, 'DD Mon YYYY HH24:MI:SS'),
+									updated_at = TO_TIMESTAMP(:updated_at, 'MM/DD/YYYY HH24:MI:SS')
+							WHERE id = :id";
 		$stmt = oci_parse($this->conn, $query);
 
 		$this->clean();
 
 		oci_bind_by_name($stmt, ':id', $this->id);
 		oci_bind_by_name($stmt, ':username', $this->username);
-		oci_bind_by_name($stmt, ':password', $this->password);
 		oci_bind_by_name($stmt, ':phone', $this->phone);
 		oci_bind_by_name($stmt, ':mail_index', $this->mail_index);
+		oci_bind_by_name($stmt, ':address', $this->address);
 		oci_bind_by_name($stmt, ':created_at', $this->created_at);
 		oci_bind_by_name($stmt, ':updated_at', $this->updated_at);
 
@@ -131,8 +133,11 @@ class User
 
 	public function check()
 	{
-		$query = 'SELECT id, username, phone, mail_index, address, created_at, updated_at FROM ' . $this->table_name . ' 
-							WHERE LOWER(phone) = LOWER(:phone) AND password = :password';
+		$query = "SELECT id, username, phone, mail_index, address, 
+       TO_CHAR(created_at, 'DD Mon YYYY HH24:MI:SS') AS CREATED_AT,
+       TO_CHAR(updated_at, 'DD Mon YYYY HH24:MI:SS') AS UPDATED_AT
+			FROM " . $this->table_name . ' 
+							WHERE phone = :phone AND password = :password';
 		$stmt = oci_parse($this->conn, $query);
 
 		$this->phone = htmlspecialchars(strip_tags($this->phone));
@@ -142,7 +147,6 @@ class User
 		oci_bind_by_name($stmt, ':password', $this->password);
 
 		oci_execute($stmt);
-
 		return $stmt;
 	}
 
@@ -192,8 +196,10 @@ class User
 
 	public function getByToken()
 	{
-		$query = 'SELECT id, username, phone, mail_index, address, created_at, updated_at
-							FROM ' . $this->table_name . ' WHERE remember_token = :token';
+		$query = "SELECT id, username, phone, mail_index, address, 
+       TO_CHAR(created_at, 'DD Mon YYYY HH24:MI:SS') AS CREATED_AT,
+       TO_CHAR(updated_at, 'DD Mon YYYY HH24:MI:SS') AS UPDATED_AT
+							FROM " . $this->table_name . ' WHERE remember_token = :token';
 		$stmt = oci_parse($this->conn, $query);
 
 		$this->remember_token = htmlspecialchars(strip_tags($this->remember_token));

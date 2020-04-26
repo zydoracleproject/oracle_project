@@ -14,7 +14,6 @@ $user->id = $data['id'];
 
 // set product data
 $user->username = $data['u_username'];
-$user->password = $data['u_password'];
 $user->phone = $data['phone'];
 $user->mail_index = $data['mail_index'];
 $user->address = $data['address'];

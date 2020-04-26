@@ -9,7 +9,7 @@ header('Content-Type: application/json');
 include_once '../layouts/user_inc.php';
 
 if (!empty($data['remember_token'])) {
-	$user->remember_token = $data['remember_token'];
+	$user->remember_token = base64_decode($data['remember_token']);
 
 	$stmt = $user->getByToken();
 	$user_from_table = oci_fetch_assoc($stmt);

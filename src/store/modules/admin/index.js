@@ -1,7 +1,7 @@
-import login from "./modules/login";
+import {loginAdmin} from "./modules/login";
 
 export const adminStore = {
 	modules: {
-		login,
+		loginAdmin,
 	}
 }

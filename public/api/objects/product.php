@@ -221,7 +221,7 @@ class Product
 	{
 		// select from all records
 		$query = 'SELECT * FROM ' . $this->table_name . '_view
-							WHERE p.title LIKE :keywords OR c.title LIKE :keywords OR m.title LIKE :keywords';
+							WHERE title LIKE :keywords OR category_title LIKE :keywords OR manufacturer_title LIKE :keywords';
 
 		// preparing query
 		$stmt = oci_parse($this->conn, $query);
@@ -239,49 +239,12 @@ class Product
 		return $stmt;
 	}
 
-	// method readPaging - reading products with paging
-	public function readPaging($from_record_num, $records_per_page)
-	{
-
-		// Selecting
-		$query = 'SELECT * FROM ' . $this->table_name . '_view
-							WHERE rownum BETWEEN :f AND :t
-							ORDER BY p.created_at DESC';
-
-		// Preparing query
-		$stmt = oci_parse($this->conn, $query);
-
-		// Binding
-		oci_bind_by_name($stmt, ':f', $from_record_num);
-		oci_bind_by_name($stmt, ':t', $records_per_page);
-
-		// Make request
-		oci_execute($stmt);
-
-		// Returns data from db
-		return $stmt;
-	}
-
-	// Calculating for paging products
-	public function count()
-	{
-		$query = 'SELECT COUNT(*) as total_rows FROM ' . $this->table_name;
-
-		$stmt = oci_parse($this->conn, $query);
-
-		oci_execute($stmt);
-
-		$row = oci_fetch_assoc($stmt);
-
-		return $row['TOTAL_ROWS'];
-	}
-
 	// method search() - read products by manufacturers
 	public function readByMan($id)
 	{
 		// select from all records
 		$query = 'SELECT * FROM ' . $this->table_name .'_view
-							WHERE p.manufacturer_id = :id';
+							WHERE manufacturer_id = :id';
 
 		// preparing query
 		$stmt = oci_parse($this->conn, $query);
@@ -303,7 +266,7 @@ class Product
 	{
 		// select from all records
 		$query = 'SELECT * FROM ' . $this->table_name .'_view
-							WHERE p.category_id = :id';
+							WHERE category_id = :id';
 
 		// preparing query
 		$stmt = oci_parse($this->conn, $query);

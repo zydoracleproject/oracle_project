@@ -13,6 +13,8 @@ if (!empty($data['u_username']) && !empty($data['u_password']) && !empty($data['
 	$user->username = $data['u_username'];
 	$user->password = md5($data['u_password']);
 	$user->phone = $data['phone'];
+	$user->mail_index = $data['mail_index'];
+	$user->address = $data['address'];
 	$user->created_at = date('m/d/Y H:i:s');
 
 	if ($user->create()) {
