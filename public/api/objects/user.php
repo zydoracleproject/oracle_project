@@ -16,7 +16,7 @@ class User
 
 	public function read()
 	{
-		$query = "SELECT username, phone, mail_index, 
+		$query = "SELECT id, username, phone, mail_index, 
        				address, TO_CHAR(created_at, 'DD Mon YYYY HH24:MI:SS') AS CREATED_AT,
        				TO_CHAR(updated_at, 'DD Mon YYYY HH24:MI:SS') AS UPDATED_AT
 							FROM " . $this->table_name . ' ORDER BY created_at';
