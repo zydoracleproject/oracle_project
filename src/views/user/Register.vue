@@ -130,7 +130,7 @@
 						this.loading = false;
 						if (!this.getUserError) {
 							this.$store.dispatch('loginUser', {
-								username: btoa('admin'),
+								username: btoa('guest'),
 								password: btoa('1234'),
 								phone: this.phone,
 								u_password: this.u_password,

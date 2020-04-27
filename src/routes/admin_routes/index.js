@@ -6,8 +6,14 @@ import Categories from "../../views/admin/Categories";
 import Manufacturers from "../../views/admin/Manufacturers";
 import Users from "../../views/admin/Users";
 import Accounts from "../../views/admin/Accounts";
+import Main from "../../views/admin/Main";
 
 export const adminRoutes = [
+	{
+		path: 'main',
+		component: Main,
+		name: 'admin_main',
+	},
 	{
 		path: 'login',
 		component: Login,

@@ -77,7 +77,7 @@
     mounted() {
 			if (!this.isUserAuth) {
 				this.$store.dispatch('initUser', {
-					username: btoa('admin'),
+					username: btoa('guest'),
 					password: btoa('1234'),
 				});
       }

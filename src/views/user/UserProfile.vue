@@ -170,7 +170,7 @@
 			},
 			deleteUser() {
 				this.$store.dispatch('deleteUser', {
-					username: btoa('admin'),
+					username: btoa('guest'),
 					password: btoa('1234'),
 					id: this.getUser.id,
 				});
