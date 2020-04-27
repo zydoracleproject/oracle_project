@@ -27,7 +27,7 @@
           <v-dialog v-model="editDialog" persistent max-width="600px">
             <template v-slot:activator="{ on }">
               <v-btn
-                v-if="getAdmin.username === 'admin' || getAdmin.username === 'manager'"
+                v-if="checkAdmin || checkManager"
                 :color="selected.length ? 'yellow darken-3' : ''"
                 class="mx-2"
                 dark
@@ -60,7 +60,7 @@
           <v-dialog v-model="deleteDialog" persistent max-width="600px">
             <template v-slot:activator="{ on }">
               <v-btn
-                v-if="getAdmin.username === 'admin' || getAdmin.username === 'manager'"
+                v-if="checkAdmin"
                 :color="selected.length ? 'red' : ''"
                 dark
                 class="mx-2"
@@ -82,7 +82,7 @@
           <v-dialog v-model="createDialog" persistent max-width="600px">
             <template v-slot:activator="{ on }">
               <v-btn
-                v-if="getAdmin.username === 'admin'"
+                v-if="checkAdmin"
                 color="success"
                 class="mx-2"
                 v-on="on"
@@ -160,6 +160,12 @@
 		}),
 		computed: {
 			...mapGetters(['getAdmin', 'getCategories', 'isLoadingCats', 'getCategoryError']),
+			checkAdmin() {
+				return this.getAdmin.role === 'ADMIN_ROLE';
+			},
+      checkManager() {
+				return this.getAdmin.role === 'MANAGER_ROLE';
+      }
 		},
 		mounted() {
 			this.readCategory();
@@ -170,7 +176,7 @@
 					username: btoa(this.getAdmin.username),
 					password: btoa(this.getAdmin.password),
 				});
-      },
+			},
 			deleteCategory(id) {
 				this.$store.dispatch('deleteCategory', {
 					username: btoa(this.getAdmin.username),
@@ -200,7 +206,7 @@
 						this.readCategory();
 					} else {
 						this.readCategory();
-          }
+					}
 				}, 500);
 			},
 			createCategory(title) {
@@ -216,7 +222,7 @@
 						this.snackbar = true;
 					} else {
 						this.readCategory();
-          }
+					}
 				}, 500);
 			}
 		},

@@ -4,7 +4,7 @@ class Database
 {
 
 	// My login data of database
-	private $host = 'dhcppc6:1521/XE';
+	private $host = 'localhost:1521/XE';
 	private $db_name = 'warmhouse';
 	private $username = 'guest';
 	private $password = 'guest';

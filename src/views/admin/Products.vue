@@ -11,7 +11,7 @@
       <div class="row justify-space-between align-center mb-10 mx-5">
         <h1>Товары</h1>
         <v-btn
-          v-if="getAdmin.username === 'admin'"
+          v-if="checkAdmin"
           :to="{name: 'product_create'}"
           color="success"
           large
@@ -174,9 +174,10 @@
               <v-btn
                 :to="{name: 'product_update', params: {id: product.id}}"
                 color="yellow darken-3"
+                v-if="checkAdmin || checkManager"
                 class="white--text ma-3">Редактировать
               </v-btn>
-              <v-btn color="red" class="white--text ma-3" @click="deleteProduct(product.id)">Удалить</v-btn>
+              <v-btn color="red" v-if="checkAdmin" class="white--text ma-3" @click="deleteProduct(product.id)">Удалить</v-btn>
             </v-row>
           </v-card>
         </div>
@@ -216,6 +217,12 @@
 				}
 				return this.getProducts.slice(this.offset, this.limit);
 			},
+			checkAdmin() {
+				return this.getAdmin.role === 'ADMIN_ROLE';
+			},
+			checkManager() {
+				return this.getAdmin.role === 'MANAGER_ROLE';
+			}
 		},
 		mounted() {
 			this.$store.dispatch('readProducts', this.getAdmin);

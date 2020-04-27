@@ -5,6 +5,7 @@ import UpdateProducts from "../../views/admin/UpdateProducts";
 import Categories from "../../views/admin/Categories";
 import Manufacturers from "../../views/admin/Manufacturers";
 import Users from "../../views/admin/Users";
+import Accounts from "../../views/admin/Accounts";
 
 export const adminRoutes = [
 	{
@@ -42,5 +43,10 @@ export const adminRoutes = [
 		path: 'users',
 		component: Users,
 		name: 'admin_users',
+	},
+	{
+		path: 'accounts',
+		component: Accounts,
+		name: 'admin_accounts',
 	}
 ];

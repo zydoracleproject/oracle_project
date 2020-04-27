@@ -27,7 +27,7 @@
           <v-dialog v-model="editDialog" persistent max-width="600px">
             <template v-slot:activator="{ on }">
               <v-btn
-                v-if="getAdmin.username === 'admin' || getAdmin.username === 'manager'"
+                v-if="checkAdmin || checkManager"
                 :color="selected.length ? 'yellow darken-3' : ''"
                 class="mx-2"
                 dark
@@ -68,7 +68,7 @@
           <v-dialog v-model="deleteDialog" persistent max-width="600px">
             <template v-slot:activator="{ on }">
               <v-btn
-                v-if="getAdmin.username === 'admin' || getAdmin.username === 'manager'"
+                v-if="checkAdmin"
                 :color="selected.length ? 'red' : ''"
                 dark
                 class="mx-2"
@@ -90,7 +90,7 @@
           <v-dialog v-model="createDialog" persistent max-width="600px">
             <template v-slot:activator="{ on }">
               <v-btn
-                v-if="getAdmin.username === 'admin'"
+                v-if="checkAdmin"
                 color="success"
                 class="mx-2"
                 v-on="on"
@@ -184,6 +184,12 @@
 					category_title: this.selected[0].category_title
 				} : null;
 			},
+			checkAdmin() {
+				return this.getAdmin.role === 'ADMIN_ROLE';
+			},
+			checkManager() {
+				return this.getAdmin.role === 'MANAGER_ROLE';
+			}
 		},
 		mounted() {
 			this.readMan();

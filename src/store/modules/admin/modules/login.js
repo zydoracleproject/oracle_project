@@ -44,10 +44,7 @@ export const loginAdmin = {
 		initAdmin(context) {
 			const admin = JSON.parse(getCookie('admin'));
 			if (admin) {
-				context.commit('setAdmin', {
-					username: atob(admin.username),
-					password: atob(admin.password),
-				});
+				context.commit('setAdmin', admin);
 				context.commit('setAuthenticated', true);
 			}
 		},
@@ -61,11 +58,10 @@ export const loginAdmin = {
 			})).then((response) => {
 				if (response.data) {
 					context.commit('setLoading', false);
-					context.commit('setAdmin', {
-						username: atob(response.data.username),
-						password: atob(response.data.password),
-					});
-					setCookie('admin', JSON.stringify(response.data), {
+					const arr = response.data.admin.map((item) => Object.fromEntries(
+						Object.entries(item).map(([key, value]) => [key.toLowerCase(), value])));
+					context.commit('setAdmin', arr[0]);
+					setCookie('admin', JSON.stringify(arr[0]), {
 						'samesite': 'lax',
 						'max-age': 3600
 					});

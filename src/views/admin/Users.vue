@@ -49,12 +49,12 @@
 			],
     }),
 		computed: {
-			...mapGetters(['getUsers']),
+			...mapGetters(['getUsers', 'getAdmin']),
 		},
 		mounted() {
 			this.$store.dispatch('readUsers', {
-				username: btoa('admin'),
-        password: btoa('1234'),
+				username: btoa(this.getAdmin.username),
+        password: btoa(this.getAdmin.password),
       });
 		},
 	}
