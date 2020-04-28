@@ -22,8 +22,8 @@ Vue.config.productionTip = true;
 Vue.component('spinner', require('vue-simple-spinner'));
 
 new Vue({
-    render: h => h(App),
-    router,
-    vuetify,
-    store
+	render: h => h(App),
+	router,
+	vuetify,
+	store,
 }).$mount('#app')

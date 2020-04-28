@@ -44,6 +44,21 @@ class Product
 		return $stmt;
 	}
 
+	public function filter($type)
+	{
+		// Choose all records
+		$query = 'SELECT * FROM ' . $this->table_name . '_view
+							ORDER BY :type DESC';
+
+		// Make request
+		$stmt = oci_parse($this->conn, $query);
+		oci_bind_by_name($stmt, ':type', $type);
+		// execute request
+		oci_execute($stmt);
+
+		return $stmt;
+	}
+
 	// method create() - creating product
 	public function create()
 	{

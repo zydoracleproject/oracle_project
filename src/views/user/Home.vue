@@ -66,27 +66,37 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex';
+	import {mapGetters} from 'vuex';
 
 	export default {
 		name: "Home",
-    data: () => ({}),
-    computed: {
+		data: () => ({}),
+		computed: {
 			...mapGetters(['getAdmin', 'getUser', 'isUserAuth']),
-    },
-    mounted() {
+		},
+		mounted() {
 			if (!this.isUserAuth) {
 				this.$store.dispatch('initUser', {
 					username: btoa('guest'),
 					password: btoa('1234'),
 				});
-      }
-    },
-    methods: {
+			}
+
+			this.$http.get('https://api.ipify.org/?format=json').then((response) => {
+				if (response.data) {
+					this.$store.dispatch('countVisit', {
+						username: btoa('guest'),
+            password: btoa('1234'),
+            ip: response.data.ip,
+          });
+        }
+      });
+		},
+		methods: {
 			logout() {
 				this.$store.dispatch('logoutUser');
-      },
-    },
+			},
+		},
 	}
 </script>
 

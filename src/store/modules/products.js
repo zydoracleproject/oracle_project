@@ -146,8 +146,10 @@ export default {
 		},
 		search(context, data) {
 			axios.post(context.getters.getUrl + 'api/product/search.php', JSON.stringify(data)).then((response) => {
-				if (response.data) {
-					context.commit('setSearchResults', response.data);
+				if (response.data.records) {
+					const arr = response.data.records.map((item) => Object.fromEntries(
+						Object.entries(item).map(([key, value]) => [key.toLowerCase(), value])));
+					context.commit('setSearchResults', arr);
 				}
 			}).catch((error) => {
 				context.commit('setProductError', error.response.data);

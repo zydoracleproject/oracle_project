@@ -103,8 +103,11 @@ class Admin
 										EXECUTE IMMEDIATE 'CREATE SYNONYM users FOR admin.users';
 										EXECUTE IMMEDIATE 'CREATE SYNONYM products_view FOR admin.products_view';
 										EXECUTE IMMEDIATE 'CREATE SYNONYM admin_users FOR admin.admin_users';
+										EXECUTE IMMEDIATE 'CREATE SYNONYM visits FOR admin.visits';
+										EXECUTE IMMEDIATE 'CREATE SYNONYM ips FOR admin.ips';
 										END;";
-						if (oci_execute(oci_parse($conn, $query), OCI_NO_AUTO_COMMIT)) {
+						$stmt = oci_parse($conn, $query);
+						if (oci_execute($stmt, OCI_NO_AUTO_COMMIT)) {
 							oci_commit($this->conn);
 							oci_commit($conn);
 							return true;
