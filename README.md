@@ -1,4 +1,4 @@
-# oracle_project
+# Warmhouse Oracle
 Our (Iliyas Ali, Bislam Makhmudov and Zhunussov Arsentiy) project
 
 This project will be a management system of the online store. We make this app with PHP (Backend, OCI8) + Oracle Database (DB) + Vue.js (Front, SPA)
