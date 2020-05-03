@@ -1,5 +1,5 @@
 # oracle_project
-Our (Nakyp Dias, Bislam Makhmudov and Zhunussov Arsentiy) project for Database Management System 1 course
+Our (Iliyas Ali, Bislam Makhmudov and Zhunussov Arsentiy) project
 
 This project will be a management system of the online store. We make this app with PHP (Backend, OCI8) + Oracle Database (DB) + Vue.js (Front, SPA)
 
